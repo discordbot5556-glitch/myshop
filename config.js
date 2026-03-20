@@ -1,55 +1,26 @@
-// ==========================================
-// ★ 設定ファイル：ここを書き換えて更新
-// ==========================================
-
-// 1. トップ画面の設定（ここを追加！）
-const topConfig = {
-    logoName: "Le.Safaiya",
-    discordLink: "https://discord.gg/79h84dBNqX", // あなたのDiscord招待リンクに書き換えてください
-    discordButtonText: "公式Discordサーバー"
-};
-
-// 2. 商品リストの設定
-// stock: "在庫数" を追加しました
-const productData = [
-    { 
-        id: 1, 
-        name: "Spotify", 
-        price: "120", 
-        stock: "15", // 在庫数を追加
-        color: "#1DB954",
-        description: "【Spotify Premium】\n・広告なしで音楽再生\n・オフライン再生対応\n・最短10分でお届けします。"
+// config.js
+const config = {
+    top: {
+        logoName: "Le.Safaiya",
+        discordLink: "https://discord.gg/79h84dBNqX", 
+        discordButtonText: "公式Discordサーバーに参加"
     },
-    { 
-        id: 2, 
-        name: "Netflix", 
-        price: "90",  
-        stock: "8", // 在庫数を追加
-        color: "#E50914",
-        description: "【Netflix 4K UHD】\n・最高画質での視聴が可能\n・全映画・ドラマが見放題\n・複数端末での同時視聴対応"
+    products: [
+        { id: 1, name: "botソスコ", price: "500", stock: "無限", color: "#634ce7", desc: "お金を払ってチケットに乗せ作りたい内容を言えば作ります！\n" },
+        { id: 2, name: "ロブロックススクリプト", price: "3000", stock: "無限", color: "#ff212c", desc: "【Netflix 4K UHD】\n・最高画質視聴\n・全映画ドラマ見放題\n・複数端末対応" },
+        { id: 3, name: "Discordtokunn", price: "15", stock: 10, color: "#5865F2", desc: "【Discord Nitro】\n・サーバーブースト×2\n・特大ファイル送信可能\n・限定バッジ" }, // ←ここにカンマが必要でした！
+        { id: 6, name: "Spotify", price: "200", stock: 0, color: "#1DB954", desc: "【Spotify Premium】\n・広告なし再生\n・オフライン保存可能\n・最短10分納品" }
+    ],
+    payment: {
+        name: "PayPay",
+        icon: "🅿️",
+        link: "https://qr.paypay.ne.jp/p2p01_4iHzuQaV8lpV6m6a" 
     },
-    { 
-        id: 3, 
-        name: "Discord", 
-        price: "500", 
-        stock: "25", // 在庫数を追加
-        color: "#5865F2",
-        description: "【Discord Nitro】\n・サーバーブースト付き\n・カスタム絵文字使用可能\n・最大500MBのアップロード容量"
+    purchase: {
+        title: "ご注文ありがとうございます",
+        message: "以下のボタンからPayPayでお支払い後、公式Discordサーバーにてチケットを作成し、決済完了のスクリーンショットを送信してください。",
+        payButtonText: "PayPayで支払う",
+        discordButtonText: "Discordで報告する",
+        discordLink: "https://discord.gg/79h84dBNqX" 
     }
-];
-
-// 3. 支払い方法の設定
-const paymentMethods = [
-    { name: "PayPay", icon: "🅿️" },
-    { name: "仮想通貨 (BTC/ETH)", icon: "💎" },
-    { name: "クレジットカード", icon: "💳" },
-    { name: "銀行振込", icon: "🏦" }
-];
-
-// 4. 購入確定後の案内設定
-const purchaseConfig = {
-    title: "ご注文ありがとうございます！",
-    message: "お支払いと商品の受け渡しを完了するために、公式Discordサーバーにてチケットを作成してください。",
-    buttonText: "公式Discordを開く",
-    link: "https://discord.gg/yourlink" // あなたのDiscordリンクに書き換えてください
 };

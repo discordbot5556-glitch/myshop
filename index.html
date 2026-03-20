@@ -2,70 +2,50 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>Le.Safaiya - Cosmic Harbor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le.Safaiya - 公式ショップ</title>
     <style>
-        /* --- 共通・宇宙デザイン --- */
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #000; font-family: 'Exo 2', sans-serif; color: white; scroll-behavior: smooth; overflow-x: hidden; }
+        /* --- 基本デザイン --- */
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #000; font-family: 'Helvetica Neue', 'Arial', 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif; color: white; scroll-behavior: smooth; overflow-x: hidden; }
         .space { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 20% 30%, rgba(30, 0, 80, 0.4), transparent 50%), radial-gradient(circle at 80% 70%, rgba(0, 40, 100, 0.4), transparent 50%); z-index: 0; }
         .stars-back { position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%; box-shadow: 50px 100px white, 200px 300px white, 350px 50px white, 500px 400px white, 650px 150px white, 800px 500px white, 950px 250px white; opacity: 0.3; }
-        .shooting-star { position: absolute; top: var(--top); left: var(--left); width: 2px; height: 2px; background: white; opacity: 0; box-shadow: 0 0 15px 3px white; animation: shoot var(--speed) infinite linear; }
-        @keyframes shoot { 0% { transform: rotate(-30deg) translateX(0); opacity: 0; } 5% { opacity: 1; } 12% { transform: rotate(-30deg) translateX(-1000px); opacity: 0; } 100% { transform: rotate(-30deg) translateX(-1000px); opacity: 0; } }
-        
         section { position: relative; width: 100%; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; }
+        #hero h1 { font-size: 4em; letter-spacing: 0.5em; background: linear-gradient(to right, #fff, #88e3ff, #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 20px rgba(136, 227, 255, 0.8)); margin-bottom: 25px; }
+        .top-discord-link { font-size: 1.1em; color: rgba(255,255,255,0.7); text-decoration: none; border: 1px solid rgba(255,255,255,0.2); padding: 12px 25px; border-radius: 30px; transition: 0.3s; display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.05); }
         
-        /* ヒーローエリア（ロゴとDiscordリンク） */
-        #hero h1 { font-size: 5em; letter-spacing: 0.8em; background: linear-gradient(to right, #fff, #88e3ff, #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 20px rgba(136, 227, 255, 0.8)); margin-right: -0.8em; margin-bottom: 20px; }
-        .top-discord-link { font-size: 1.2em; color: rgba(255,255,255,0.7); text-decoration: none; border: 1px solid rgba(255,255,255,0.3); padding: 10px 20px; border-radius: 30px; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
-        .top-discord-link:hover { background: rgba(88, 101, 242, 0.2); border-color: rgb(88, 101, 242); color: white; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(88, 101, 242, 0.3); }
+        /* --- 横長カード --- */
+        #product-list-section { display: flex; flex-direction: column; gap: 20px; padding: 100px 20px; max-width: 900px; margin: 0 auto; }
+        .card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; width: 100%; display: flex; align-items: center; padding: 25px 40px; transition: 0.4s; box-sizing: border-box; }
+        .card:hover { transform: scale(1.02); border-color: #88e3ff; background: rgba(255, 255, 255, 0.07); }
+        .img-box { width: 70px; height: 70px; min-width: 70px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.5em; margin-right: 30px; }
+        .card-info { flex-grow: 1; text-align: left; }
+        .card-info h3 { margin: 0; font-size: 1.8em; }
+        .stock-tag { font-size: 0.8em; color: #88e3ff; opacity: 0.7; display: block; margin-top: 5px; }
+        .card-action { display: flex; align-items: center; gap: 40px; }
+        .card-action p { margin: 0; font-size: 1.6em; font-weight: bold; }
 
-        /* 商品一覧 */
-        #product-list-section { display: flex; flex-direction: row; flex-wrap: wrap; gap: 30px; padding: 100px 20px; background: rgba(0, 0, 0, 0.4); justify-content: center; }
-        .card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); padding: 30px; border-radius: 20px; width: 220px; text-align: center; border: 1px solid rgba(255, 255, 255, 0.1); transition: 0.4s; }
-        .card:hover { transform: translateY(-10px); border-color: #88e3ff; }
-        .img-box { height: 120px; border-radius: 15px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2em; text-transform: uppercase; }
-
-        /* オーバーレイ（詳細・完了画面） */
-        .overlay-screen { display: none; background: rgba(0,0,0,0.95); backdrop-filter: blur(40px); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; align-items: center; justify-content: center; }
-        .container-box { display: flex; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 30px; width: 90%; max-width: 1100px; min-height: 550px; overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
-
-        .pane-left { flex: 1.2; padding: 50px; border-right: 1px solid rgba(255, 255, 255, 0.1); display: flex; flex-direction: column; }
-        .pane-right { flex: 1; padding: 50px; background: rgba(0, 0, 0, 0.2); display: flex; flex-direction: column; }
-        
-        /* 在庫表示のスタイル */
-        .info-bar { display: flex; align-items: center; gap: 20px; margin: 15px 0 25px 0; }
-        .price { font-size: 2em; color: #88e3ff; font-weight: bold; }
-        .stock-label { background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 15px; font-size: 0.9em; color: rgba(255,255,255,0.8); }
-        .stock-count { color: #88e3ff; font-weight: bold; margin-left: 5px; }
-
-        .desc-box { line-height: 1.8; opacity: 0.9; background: rgba(255,255,255,0.05); padding: 25px; border-radius: 20px; flex-grow: 1; white-space: pre-wrap; }
-
-        .payment-option { background: rgba(255,255,255,0.05); padding: 18px; border-radius: 12px; margin-bottom: 12px; cursor: pointer; border: 1px solid transparent; transition: 0.3s; display: flex; align-items: center; gap: 15px; }
-        .payment-option:hover { background: rgba(255,255,255,0.1); border-color: #88e3ff; transform: translateX(5px); }
-
-        button { background: linear-gradient(135deg, #00c6ff, #0072ff); color: white; border: none; padding: 18px; width: 100%; border-radius: 15px; cursor: pointer; font-weight: bold; font-size: 1.1em; transition: 0.3s; margin-top: 10px; }
+        /* --- ボタン --- */
+        button { background: linear-gradient(135deg, #00c6ff, #0072ff); color: white; border: none; padding: 15px 30px; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 1em; transition: 0.3s; }
         button:hover { filter: brightness(1.2); transform: translateY(-3px); }
-        .back-link { margin-top: 20px; color: #aaa; cursor: pointer; text-align: center; }
+        .btn-paypay { background: #ff0033 !important; }
 
-        /* 完了画面 */
-        #thanks-screen .container-box { flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 50px; }
-        #thanks-screen h2 { font-size: 3em; color: #88e3ff; margin-bottom: 20px; }
-
-        @media (max-width: 900px) { .container-box { flex-direction: column; width: 95%; height: 95vh; overflow-y: auto; } .pane-left, .pane-right { flex: none; padding: 30px; border-right: none; } }
+        /* --- 画面切り替え --- */
+        .overlay-screen { display: none; background: rgba(0,0,0,0.95); backdrop-filter: blur(40px); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; align-items: center; justify-content: center; }
+        .container-box { display: flex; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 30px; width: 90%; max-width: 1000px; min-height: 500px; overflow: hidden; }
+        .pane-left { flex: 1.2; padding: 50px; border-right: 1px solid rgba(255, 255, 255, 0.1); }
+        .pane-right { flex: 1; padding: 50px; background: rgba(0, 0, 0, 0.2); display: flex; flex-direction: column; justify-content: center; }
+        
+        .back-link { margin-top: 20px; color: #aaa; cursor: pointer; text-align: center; font-size: 0.9em; text-decoration: underline; }
     </style>
 </head>
 <body>
-
-    <div class="space">
-        <div class="stars-back"></div>
-        <div class="shooting-star" style="--top:15%; --left:95%; --speed:4s;"></div>
-        <div class="shooting-star" style="--top:45%; --left:100%; --speed:3s;"></div>
-    </div>
-
+    <div class="space"><div class="stars-back"></div></div>
+    
     <div id="main-page">
         <section id="hero">
             <h1 id="top-logo"></h1>
             <div id="top-discord-container"></div>
-            <div style="cursor:pointer; margin-top: 40px; opacity: 0.7;" onclick="document.getElementById('product-list-section').scrollIntoView();">SCROLL DOWN ↓</div>
+            <div style="cursor:pointer; margin-top: 50px; opacity: 0.5;" onclick="window.scrollTo(0, window.innerHeight)">下にスクロール</div>
         </section>
         <section id="product-list-section"></section>
     </div>
@@ -73,68 +53,72 @@
     <div id="detail-section" class="overlay-screen">
         <div class="container-box">
             <div class="pane-left">
-                <h2 id="detail-name"></h2>
-                <div class="info-bar">
-                    <div id="detail-price" class="price"></div>
-                    <div id="detail-stock" class="stock-label">在庫:<span class="stock-count"></span></div>
-                </div>
-                <div id="detail-desc" class="desc-box"></div>
+                <h2 id="detail-name" style="font-size: 2.5em; margin: 0;"></h2>
+                <div id="detail-price" style="font-size: 2em; color: #88e3ff; font-weight: bold; margin: 10px 0;"></div>
+                <div id="detail-stock" style="color: #88e3ff; font-size: 0.9em; margin-bottom: 20px;"></div>
+                <div id="detail-desc" style="white-space: pre-wrap; line-height: 1.8; opacity: 0.8; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px;"></div>
             </div>
             <div class="pane-right">
-                <h3 style="color:#88e3ff; letter-spacing: 0.2em;">PAYMENT</h3>
-                <div id="payment-list"></div>
-                <button onclick="showThanks()">購入を確定する</button>
-                <div class="back-link" onclick="closeAll()">← 商品一覧に戻る</div>
+                <div style="background: #ff0033; color: white; padding: 10px; border-radius: 10px; font-weight: bold; text-align: center; margin-bottom: 20px;">🅿️ PayPay決済</div>
+                <p style="font-size: 0.9em; opacity: 0.8; margin-bottom: 30px;">「購入手続きへ」を押すと、お支払い案内画面に移動します。</p>
+                <button onclick="showThanks()">購入手続きへ</button>
+                <div class="back-link" onclick="closeAll()">商品一覧に戻る</div>
             </div>
         </div>
     </div>
 
     <div id="thanks-screen" class="overlay-screen">
-        <div class="container-box">
-            <h2 id="thanks-title"></h2>
-            <p id="thanks-message" style="max-width: 650px; line-height: 2; margin-bottom: 40px; font-size: 1.1em;"></p>
-            <button id="thanks-link-btn" style="max-width: 400px;" onclick="window.open(purchaseConfig.link, '_blank')"></button>
+        <div class="container-box" style="flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 50px;">
+            <h2 id="thanks-title" style="font-size: 2.5em; color: #88e3ff; margin-bottom: 20px;"></h2>
+            <p id="thanks-message" style="max-width: 700px; line-height: 2; margin-bottom: 40px; font-size: 1.1em;"></p>
+            <div style="display: flex; gap: 20px; width: 100%; max-width: 600px;">
+                <button id="btn-paypay-link" class="btn-paypay" style="flex: 1;" onclick="window.open(config.payment.link, '_blank')"></button>
+                <button id="btn-discord-report" style="flex: 1;" onclick="window.open(config.purchase.discordLink, '_blank')"></button>
+            </div>
             <div class="back-link" onclick="closeAll()" style="margin-top: 40px;">ショップに戻る</div>
         </div>
     </div>
 
     <script src="config.js"></script>
     <script>
-        // トップ画面の初期化
-        document.getElementById('top-logo').innerText = topConfig.logoName;
-        document.getElementById('top-discord-container').innerHTML = `
-            <a href="${topConfig.discordLink}" target="_blank" class="top-discord-link">
-                <span>💬</span> ${topConfig.discordButtonText}
-            </a>
-        `;
+        window.onload = () => { if (typeof config !== 'undefined') initApp(); };
 
-        // 商品表示
-        const container = document.getElementById('product-list-section');
-        productData.forEach(item => {
-            container.innerHTML += `<div class="card"><div class="img-box" style="background:${item.color}">${item.name}</div><h3>${item.name}</h3><p>¥${item.price}〜</p><button onclick="openDetail(${item.id})">購入</button></div>`;
-        });
-
-        // 支払い方法表示
-        const payList = document.getElementById('payment-list');
-        paymentMethods.forEach(method => {
-            payList.innerHTML += `<div class="payment-option"><span>${method.icon}</span> ${method.name}</div>`;
-        });
+        function initApp() {
+            document.getElementById('top-logo').innerText = config.top.logoName;
+            document.getElementById('top-discord-container').innerHTML = `<a href="${config.top.discordLink}" target="_blank" class="top-discord-link"><span>💬</span> ${config.top.discordButtonText}</a>`;
+            const list = document.getElementById('product-list-section');
+            config.products.forEach(p => {
+                list.innerHTML += `
+                <div class="card">
+                    <div class="img-box" style="background:${p.color}">${p.name[0]}</div>
+                    <div class="card-info">
+                        <h3>${p.name}</h3>
+                        <span class="stock-tag">現在庫: ${p.stock}</span>
+                    </div>
+                    <div class="card-action">
+                        <p>¥${p.price}</p>
+                        <button onclick="openDetail(${p.id})">詳細を見る</button>
+                    </div>
+                </div>`;
+            });
+        }
 
         function openDetail(id) {
-            const item = productData.find(p => p.id === id);
-            document.getElementById('detail-name').innerText = item.name;
-            document.getElementById('detail-price').innerText = "¥" + item.price + " 〜";
-            // 在庫数の表示を更新
-            document.querySelector('#detail-stock .stock-count').innerText = item.stock;
-            document.getElementById('detail-desc').innerText = item.description;
+            const p = config.products.find(x => x.id === id);
+            document.getElementById('detail-name').innerText = p.name;
+            document.getElementById('detail-price').innerText = "¥" + p.price;
+            document.getElementById('detail-stock').innerText = "在庫状況: " + p.stock;
+            document.getElementById('detail-desc').innerText = p.desc;
             document.getElementById('detail-section').style.display = 'flex';
             document.getElementById('main-page').style.display = 'none';
         }
 
         function showThanks() {
-            document.getElementById('thanks-title').innerText = purchaseConfig.title;
-            document.getElementById('thanks-message').innerText = purchaseConfig.message;
-            document.getElementById('thanks-link-btn').innerText = purchaseConfig.buttonText;
+            document.getElementById('thanks-title').innerText = config.purchase.title;
+            document.getElementById('thanks-message').innerText = config.purchase.message;
+            document.getElementById('btn-paypay-link').innerText = config.purchase.payButtonText;
+            document.getElementById('btn-discord-report').innerText = config.purchase.discordButtonText;
+            
             document.getElementById('detail-section').style.display = 'none';
             document.getElementById('thanks-screen').style.display = 'flex';
         }
