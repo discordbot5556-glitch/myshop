@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le.Safaiya | Official Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --main: #00aaff; --bg: #00040a; --card: rgba(255,255,255,0.03); --text: #fff; }
+        
+        body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Noto Sans JP', sans-serif; overflow-x: hidden; scroll-behavior: smooth; }
+        #star-canvas { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+
+        /* ⚙️ 管理用ボタン（画面右上に配置） */
+        .admin-trigger {
+            position: fixed; top: 20px; right: 20px; z-index: 2000;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            color: #444; width: 35px; height: 35px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.3s; font-size: 1.2em;
+        }
+        .admin-trigger:hover { color: var(--main); border-color: var(--main); background: rgba(0,170,255,0.1); }
+
+        /* 🚀 Splash */
+        #splash { position: fixed; inset: 0; background: #000; z-index: 100000; display: flex; align-items: center; justify-content: center; flex-direction: column; transition: 1s; }
+        .loader { border: 1px solid var(--main); width: 150px; height: 1px; position: relative; overflow: hidden; margin-top: 20px; }
+        .loader::after { content: ''; position: absolute; left: -100%; width: 100%; height: 100%; background: var(--main); animation: load 1.5s forwards; }
+        @keyframes load { to { left: 0; } }
+
+        /* 🔝 Hero Section */
+        .hero {
+            height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+            background: radial-gradient(circle at center, rgba(0, 170, 255, 0.08) 0%, rgba(0,0,0,0) 80%);
+        }
+        .hero h1 { font-family: 'Oswald'; font-size: clamp(2.5em, 10vw, 6em); margin: 0; letter-spacing: 15px; color: var(--text); }
+        .hero a { display: inline-flex; align-items: center; gap: 10px; margin-top: 40px; padding: 12px 30px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); color: var(--text); text-decoration: none; border-radius: 50px; font-size: 0.9em; transition: 0.3s; backdrop-filter: blur(5px); }
+
+        /* 📊 List UI */
+        .container { max-width: 900px; margin: 0 auto; padding: 100px 20px; }
+        #grid { display: flex; flex-direction: column; gap: 15px; }
+        .card { display: flex; align-items: center; background: var(--card); border: 1px solid rgba(255,255,255,0.08); padding: 20px 30px; border-radius: 12px; transition: 0.3s; }
+        .card:hover { border-color: var(--main); background: rgba(0,170,255,0.05); }
+        .card.sold-out { opacity: 0.4; }
+        .item-icon { width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.5em; margin-right: 25px; flex-shrink: 0; }
+        .item-info { flex-grow: 1; }
+        .item-name { font-size: 1.3em; font-weight: 700; margin: 0; }
+        .item-stock { font-size: 0.75em; color: #777; margin-top: 4px; }
+        .item-price { font-family: 'Oswald'; font-size: 1.5em; margin-right: 30px; font-weight: 500; }
+        .item-price::before { content: "¥"; font-size: 0.8em; margin-right: 2px; }
+        .btn-detail { background: linear-gradient(90deg, #0088ff, #00ccff); color: #fff; padding: 10px 25px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; font-size: 0.85em; }
+
+        /* Overlay & Modals */
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100000; align-items: center; justify-content: center; backdrop-filter: blur(15px); }
+        .window { width: 90%; max-width: 500px; background: #050a14; border: 1px solid #1a2a40; padding: 40px; border-radius: 20px; text-align: center; }
+        .btn { width: 100%; padding: 15px; margin-top: 10px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; font-family: 'Oswald'; }
+        #toast-wrap { position: fixed; bottom: 20px; right: 20px; z-index: 200000; }
+        .toast { background: var(--main); color: #fff; padding: 12px 25px; border-radius: 5px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="admin-trigger" onclick="openAdmin()">⚙️</div>
+
+    <div id="splash">
+        <h2 style="font-family:'Oswald'; color:var(--main); letter-spacing:5px;">Le.Safaiya</h2>
+        <div class="loader"></div>
+    </div>
+
+    <canvas id="star-canvas"></canvas>
+    <div id="toast-wrap"></div>
+
+    <div class="hero">
+        <h1 id="hero-name">Le.Safaiya</h1>
+        <a id="hero-link" href="#" target="_blank">公式Discordサーバーに参加</a>
+    </div>
+
+    <div class="container">
+        <div id="grid"></div>
+    </div>
+
+    <div id="modal-det" class="overlay">
+        <div class="window">
+            <h2 id="m-name" style="font-family:'Oswald'; color:var(--main);"></h2>
+            <div id="m-price" style="font-size:2em; font-family:'Oswald'; margin:10px 0;"></div>
+            <p id="m-desc" style="color:#777; font-size:0.9em; margin-bottom:30px; white-space:pre-wrap;"></p>
+            <button class="btn" style="background:var(--main); color:#fff;" onclick="order()">注文IDを発行</button>
+            <button class="btn" style="background:none; color:#444;" onclick="closeModal()">キャンセル</button>
+        </div>
+    </div>
+
+    <div id="modal-report" class="overlay">
+        <div class="window">
+            <h3 style="color:var(--main);">ORDER ID GENERATED</h3>
+            <div id="report-text" style="background:#000; padding:20px; border-radius:10px; font-family:monospace; font-size:0.8em; margin:20px 0; border:1px solid #111; text-align:left; white-space:pre-wrap;"></div>
+            <button class="btn" style="background:var(--main); color:#fff;" onclick="copyReport()">コピーしてDiscordへ送信</button>
+            <a id="pay-link" href="#" target="_blank" class="btn" style="background:#ff0033; color:#fff; text-decoration:none; display:block;">PayPayで支払う</a>
+            <button class="btn" style="background:none; color:#555;" onclick="closeModal()">閉じる</button>
+        </div>
+    </div>
+
+    <div id="modal-admin" class="overlay">
+        <div class="window">
+            <h2 style="font-family:'Oswald';">STOCK EDITOR</h2>
+            <div id="admin-list" style="max-height:300px; overflow-y:auto; margin:20px 0; text-align:left;"></div>
+            <button class="btn" style="background:var(--main); color:#fff;" onclick="saveAdmin()">保存</button>
+            <button class="btn" style="background:none; color:#444;" onclick="closeModal()">閉じる</button>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        let products = [];
+        const colors = ['#5865F2', '#EB459E', '#57F287', '#FEE75C', '#ED4245'];
+
+        window.onload = () => {
+            if (typeof config === 'undefined') return;
+            setTimeout(() => { document.getElementById('splash').style.display='none'; }, 1200);
+            const saved = localStorage.getItem('ls_shop_data');
+            products = saved ? JSON.parse(saved) : config.products;
+            draw();
+            initStars();
+        };
+
+        function draw() {
+            const grid = document.getElementById('grid'); grid.innerHTML = "";
+            products.forEach((p, i) => {
+                const isOut = (p.stock == 0 || p.stock === "0");
+                const color = colors[i % colors.length];
+                grid.innerHTML += `
+                    <div class="card ${isOut ? 'sold-out' : ''}">
+                        <div class="item-icon" style="background:${color}33; color:${color};">${p.name.charAt(0)}</div>
+                        <div class="item-info">
+                            <div class="item-name">${p.name}</div>
+                            <div class="item-stock">現在庫: ${p.stock}</div>
+                        </div>
+                        <div class="item-price">${p.price}</div>
+                        <button class="btn-detail" onclick="opM(${p.id})">詳細を見る</button>
+                    </div>`;
+            });
+        }
+
+        function opM(id) {
+            const p = products.find(x => x.id == id);
+            document.getElementById('m-name').innerText = p.name;
+            document.getElementById('m-price').innerText = "¥" + p.price;
+            document.getElementById('m-desc').innerText = p.desc;
+            document.getElementById('modal-det').style.display = 'flex';
+        }
+
+        function order() {
+            const name = document.getElementById('m-name').innerText;
+            const price = document.getElementById('m-price').innerText;
+            const oid = "LS-" + Math.random().toString(36).substr(2, 5).toUpperCase();
+            document.getElementById('report-text').innerText = `【注文書】\nID: ${oid}\n商品: ${name}\n価格: ${price}\n------------------\n送金完了後に報告してください。`;
+            document.getElementById('pay-link').href = config.top.payPayLink;
+            closeModal();
+            document.getElementById('modal-report').style.display = 'flex';
+        }
+
+        // 🔐 パスワード入力処理
+        function openAdmin() {
+            const input = prompt("管理パスワードを入力:");
+            if (input === config.adminPassword) {
+                const list = document.getElementById('admin-list');
+                list.innerHTML = products.map((p, i) => `
+                    <div style="margin-bottom:10px;">
+                        <span style="font-size:0.8em;">${p.name}</span><br>
+                        <input type="text" class="stk-in" data-idx="${i}" value="${p.stock}" style="width:100%; background:#000; border:1px solid #222; color:#fff; padding:5px; border-radius:5px;">
+                    </div>`).join('');
+                document.getElementById('modal-admin').style.display = 'flex';
+            } else if (input !== null) { alert("パスワードが違います"); }
+        }
+
+        function saveAdmin() {
+            document.querySelectorAll('.stk-in').forEach(el => products[el.dataset.idx].stock = el.value);
+            localStorage.setItem('ls_shop_data', JSON.stringify(products));
+            toast("在庫を更新しました"); draw(); closeModal();
+        }
+
+        function copyReport() { navigator.clipboard.writeText(document.getElementById('report-text').innerText); toast("コピーしました"); }
+        function toast(m) { const w = document.getElementById('toast-wrap'); const t = document.createElement('div'); t.className='toast'; t.innerText=m; w.appendChild(t); setTimeout(() => { t.remove(); }, 3000); }
+        function closeModal() { document.querySelectorAll('.overlay').forEach(o => o.style.display = 'none'); }
+        
+        function initStars() {
+            const canvas = document.getElementById('star-canvas'); const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            let stars = [];
+            for(let i=0; i<100; i++) stars.push({ x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*1, s:Math.random()*0.3 });
+            function animate() {
+                ctx.clearRect(0,0,canvas.width, canvas.height); ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+                stars.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill(); s.y += s.s; if(s.y > canvas.height) s.y = 0; });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+    </script>
+</body>
+</html>
